@@ -66,7 +66,6 @@ local cmake = function(opts)
 
       local buildAndRunTarget = function()
         local target = action_state.get_selected_entry()[1]
-        local args_string = vim.fn.input("Args: ")
 
         local task = overseer.new_task({
           name = "- Build and Run",
@@ -81,8 +80,8 @@ local cmake = function(opts)
               {
                 "shell",
                 name = "- Run this target → " .. target,
-                cwd = require("util").get_root() .. "/bin",
-                cmd = target .. " " .. args_string,
+                cwd = require("util").get_root(),
+                cmd = "bin/" .. target .. " " .. vim.fn.input("Args: "),
               },
             },
           },
