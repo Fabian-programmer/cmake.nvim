@@ -69,6 +69,7 @@ local cmake = function(opts)
         local buildFolder = require("util").get_root() .. "/build"
         local binFolder = require("util").get_root() .. "/bin"
         local args_string = vim.fn.input("Args: ")
+        vim.cmd("stopinsert")
 
         local task = overseer.new_task({
           name = "- Build and Run",
