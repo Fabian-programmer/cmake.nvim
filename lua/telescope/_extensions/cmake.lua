@@ -46,7 +46,6 @@ local cmake = function(opts)
     attach_mappings = function(prompt_bufnr, map)
       actions.select_default:replace(function()
         local target = action_state.get_selected_entry()[1]
-        local buildFolder = require("util").get_root() .. "/build"
 
         actions.close(prompt_bufnr)
         local task = overseer.new_task({
@@ -56,7 +55,8 @@ local cmake = function(opts)
             tasks = { {
               "shell",
               name = "- Build this target → " .. target,
-              cmd = "cmake --build " .. buildFolder .. " --target " .. target
+              cwd = require("util").get_root(),
+              cmd = "cmake --build build --target " .. target
             }, },
           },
         })
@@ -66,10 +66,7 @@ local cmake = function(opts)
 
       local buildAndRunTarget = function()
         local target = action_state.get_selected_entry()[1]
-        local buildFolder = require("util").get_root() .. "/build"
-        local binFolder = require("util").get_root() .. "/bin"
         local args_string = vim.fn.input("Args: ")
-        vim.cmd("stopinsert")
 
         local task = overseer.new_task({
           name = "- Build and Run",
@@ -78,12 +75,14 @@ local cmake = function(opts)
             tasks = { {
               "shell",
               name = "- Build this target → " .. target,
-              cmd = "cmake --build " .. buildFolder .. " --target " .. target
+              cwd = require("util").get_root(),
+              cmd = "cmake --build build --target " .. target
             },
               {
                 "shell",
                 name = "- Run this target → " .. target,
-                cmd = binFolder .. "/" .. target .. " " .. args_string,
+                cwd = require("util").get_root() .. "/bin",
+                cmd = target .. " " .. args_string,
               },
             },
           },
@@ -96,13 +95,12 @@ local cmake = function(opts)
         local target = action_state.get_selected_entry()[1]
         vim.api.nvim_win_close(0, true)
         vim.cmd("stopinsert")
-        local binFolder = require("util").get_root() .. "/bin"
         local args_string = vim.fn.input("Args: ")
 
         local config = {
           type = "cppdbg",
           request = "launch",
-          program = binFolder .. "/" .. target,
+          program = target,
           args = function()
             local args = {}
             for word in args_string:gmatch("%S+") do
@@ -110,7 +108,7 @@ local cmake = function(opts)
             end
             return args
           end,
-          cwd = "${workspaceFolder}",
+          cwd = require("util").get_root(),
           stopAtEntry = true,
           setupCommands = {
             {
