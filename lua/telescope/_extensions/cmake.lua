@@ -100,7 +100,7 @@ local cmake = function(opts)
 					local args_string = vim.fn.input("Args: ")
 
 					local config = {
-						type = "codelldb",
+						type = "cppdbg",
 						request = "launch",
 						program = target,
 						args = function()
