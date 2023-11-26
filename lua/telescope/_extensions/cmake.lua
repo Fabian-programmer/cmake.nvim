@@ -112,6 +112,13 @@ local cmake = function(opts)
 						end,
 						cwd = require("util").get_root(),
 						stopAtEntry = true,
+						setupCommands = {
+							{
+								text = "-enable-pretty-printing",
+								description = "enable pretty printing",
+								ignoreFailures = false,
+							},
+						},
 					}
 					vim.schedule(function()
 						local dap = require("dap")
