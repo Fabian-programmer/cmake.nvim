@@ -78,7 +78,7 @@ local cmake = function(opts)
 									"shell",
 									name = "- Build this target → " .. target,
 									cwd = require("util").get_root(),
-									cmd = "cmake --build build --target " .. target,
+									cmd = "cmake --build build --target " .. target .. " -- -j8",
 								},
 								{
 									"shell",
